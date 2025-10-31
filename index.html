@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latin Text Annotator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .font-serif {
+      font-family: 'EB Garamond', serif;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fadeInUp {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+     @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+    @keyframes drawLine {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .animate-drawLine {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: drawLine 0.7s ease-out forwards;
+    }
+    @keyframes pulse-word {
+      0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+        text-shadow: none;
+      }
+      50% {
+        transform: scale(1.1);
+        filter: brightness(1.5);
+        text-shadow: 0 0 12px rgba(244, 114, 182, 0.8);
+        color: rgb(244 114 182);
+      }
+    }
+    .animate-pulse-word {
+      animation: pulse-word 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+  <body class="bg-stone-100 dark:bg-stone-950">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "Latin Text Annotator",
+  "description": "An application for students to annotate Latin texts. It allows highlighting, underlining, bracketing, connecting words with lines, and looking up word definitions using the Gemini API. The final annotated text can be exported as a PDF.",
+  "requestFramePermissions": []
+}
