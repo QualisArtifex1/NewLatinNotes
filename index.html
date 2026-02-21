@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Latin Text Annotator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['EB Garamond', 'serif'],
+            }
+          }
+        }
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +36,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
     .font-serif {
       font-family: 'EB Garamond', serif;
@@ -49,14 +62,17 @@
       animation: fadeIn 0.3s ease-in-out forwards;
     }
     @keyframes drawLine {
+      from {
+        stroke-dashoffset: 1500;
+      }
       to {
         stroke-dashoffset: 0;
       }
     }
     .animate-drawLine {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      animation: drawLine 0.7s ease-out forwards;
+      stroke-dasharray: 1500;
+      stroke-dashoffset: 1500;
+      animation: drawLine 3s ease-in-out forwards;
     }
     @keyframes pulse-word {
       0%, 100% {
@@ -73,6 +89,13 @@
     }
     .animate-pulse-word {
       animation: pulse-word 1.5s ease-in-out infinite;
+    }
+    
+    /* Smooth transitions for all themeable elements */
+    * {
+      transition-property: background-color, border-color, color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 300ms;
     }
   </style>
 </head>

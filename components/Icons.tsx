@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export const UnderlineIcon = () => (
@@ -6,28 +7,46 @@ export const UnderlineIcon = () => (
     </svg>
 );
 
+export const XIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+export const CheckIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+);
+
 export const LeftSquareBracketIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M11 3H8a2 2 0 00-2 2v14a2 2 0 002 2h3" />
     </svg>
 );
 
 export const RightSquareBracketIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3" />
     </svg>
 );
 
 export const LeftCaretIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
 );
 
 export const RightCaretIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
     </svg>
+);
+
+export const PencilIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  </svg>
 );
 
 export const BookOpenIcon = () => (
@@ -51,12 +70,12 @@ export const LoaderIcon = () => (
 
 export const ClearIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
     </svg>
 );
 
 export const QuillIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-stone-600 dark:text-stone-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-700 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
     </svg>
 );
@@ -68,11 +87,14 @@ export const StartOverIcon = () => (
     </svg>
 );
 
-export const ScrollQuillIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" className="w-24 h-24 text-stone-400 dark:text-stone-500">
-        <path fill="currentColor" d="M52.3,16.9C52,14.2,51,11.8,49.5,10c-1-1.3-2.3-2.3-3.9-2.9c-2.8-1-5.9-0.7-8.3,0.8c-2.4,1.5-4,3.7-5.1,6.2 c-0.8,1.8-1.3,3.8-1.5,5.8c-0.2,2.3-0.1,4.6,0.5,6.8c0.5,2,1.4,3.8,2.7,5.4c1.1,1.3,2.5,2.4,4.1,3.1c3.1,1.3,6.5,1.1,9.3-0.5 c2.7-1.6,4.8-4,6-7c0.9-2.3,1.4-4.8,1.4-7.3C54,23.5,53.4,20.1,52.3,16.9z M49.5,28.8c-0.6,2.1-1.8,4-3.5,5.4 c-2.1,1.6-4.8,2-7.1,1.1c-1.3-0.5-2.4-1.4-3.2-2.5c-1-1.3-1.6-2.8-2-4.4c-0.5-2-0.5-4.1-0.2-6.1c0.2-1.7,0.6-3.4,1.2-5 c0.9-2.1,2.2-3.8,4-5c1.9-1.2,4.3-1.5,6.3-0.7c1.3,0.5,2.3,1.3,3.1,2.3c1.2,1.5,2,3.5,2.3,5.6C50.2,22.1,49.9,25.6,49.5,28.8z"></path>
-        <path fill="currentColor" d="M22.8,62.8l-1.1-1.1L48,35.5l1.1,1.1L22.8,62.8z"></path>
-        <path fill="currentColor" d="M28,52.4l-5.6,5.6c-0.4,0.4-1,0.4-1.4,0l-5-5c-0.4-0.4-0.4-1,0-1.4l11-11l1.4,1.4L17,52.4l4.3,4.3l5.7-5.7 L28,52.4z"></path>
-        <path fill="currentColor" d="M12.2,20.5c-0.7-0.1-1.5-0.2-2.2-0.2c-2.5,0-5,0.7-7,2.1C2,23.3,1.3,24.5,1,26c-0.5,2-0.4,4,0.3,5.9 c0.6,1.7,1.5,3.2,2.8,4.4c1.1,1,2.4,1.8,3.9,2.3c2.8,0.8,5.7,0.4,8-1.1c0.7-0.5,1.4-1,2-1.6c0.1-0.1,0.1-0.2,0.2-0.3l1.1-1.1 c0.2-0.2,0.1-0.5-0.1-0.7c-0.5-0.3-0.8-0.8-1.2-1.3c-0.4-0.5-0.7-1-0.9-1.6c-0.5-1.5-0.5-3.1,0-4.7c0.4-1.3,1.1-2.5,2.1-3.5 c0.2-0.2,0.2-0.5,0.1-0.7l-1.1-1.1c-0.1-0.1-0.2-0.1-0.3-0.2c-1.4-0.9-2.9-1.5-4.6-1.8C14.1,20.6,13.1,20.5,12.2,20.5z"></path>
-    </svg>
+export const SunIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+  </svg>
+);
+
+export const MoonIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
 );

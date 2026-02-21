@@ -1,4 +1,3 @@
-
 import type { HighlightColor } from './constants';
 
 export interface AnnotatedWord {
@@ -6,8 +5,7 @@ export interface AnnotatedWord {
   text: string;
   highlight?: HighlightColor;
   underline?: boolean;
-  startBracket?: 'square' | 'caret';
-  endBracket?: 'square' | 'caret';
+  interlinearNote?: string;
 }
 
 export interface ConnectionLine {

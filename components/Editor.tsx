@@ -64,15 +64,15 @@ export const Editor: React.FC<EditorProps> = ({
     return () => resizeObserver.disconnect();
   }, [linesOfWords, lines, calculateLines]);
 
-  const handleDragStart = (e: React.DragEvent<HTMLSpanElement>, wordId: string) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, wordId: string) => {
     e.dataTransfer.setData('text/plain', wordId);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLSpanElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLSpanElement>, targetWordId: string) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetWordId: string) => {
     e.preventDefault();
     const fromWordId = e.dataTransfer.getData('text/plain');
     onConnectWords(fromWordId, targetWordId);
@@ -82,57 +82,99 @@ export const Editor: React.FC<EditorProps> = ({
   const hoveredWordIds = hoveredLine ? new Set([hoveredLine.fromWordId, hoveredLine.toWordId]) : new Set();
 
   return (
-    <div ref={editorRef} className="relative p-2">
-      <div className="text-xl leading-loose font-serif p-6">
+    <div ref={editorRef} className="relative p-8 md:p-16 min-h-full">
+      {/* 
+          Main Text Display:
+          Using flex flex-wrap to handle line breaks within paragraphs.
+          Gap-y is kept tight as requested.
+      */}
+      <div className="text-xl md:text-2xl font-serif">
         {linesOfWords.map((wordLine, lineIndex) => (
-          <p className="pb-2" key={lineIndex}>
+          <div className="flex flex-wrap items-center gap-y-3 mb-4" key={lineIndex}>
             {wordLine.map((word) => {
+              // Handle whitespace as a special non-selectable separator
               if (/\s+/.test(word.text)) {
-                return <span key={word.id}>{word.text}</span>;
+                return (
+                    <span 
+                      key={word.id} 
+                      className="whitespace-pre text-stone-100 dark:text-stone-700 select-none px-0.5"
+                    >
+                      {word.text}
+                    </span>
+                );
               }
+
+              const isStructural = /^[\[\]<>]$/.test(word.text);
               const highlightClass = word.highlight ? HIGHLIGHT_CLASSES[word.highlight] : '';
-              const underlineClass = word.underline ? 'underline decoration-2 decoration-sky-500' : '';
+              const underlineClass = word.underline ? 'underline decoration-[3px] decoration-amber-600/40 underline-offset-4' : '';
               const isSelected = word.id === selectedWordId;
-              const selectionClass = isSelected ? 'ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-stone-800' : '';
+              const selectionClass = isSelected ? 'ring-[2px] ring-amber-500 ring-offset-[4px] dark:ring-offset-stone-700 rounded-md bg-amber-50/80 dark:bg-amber-900/20' : '';
               const isPulsating = hoveredWordIds.has(word.id);
               const pulsatingClass = isPulsating ? 'animate-pulse-word' : '';
+              
+              // Special styling for bracket "words"
+              const structuralClass = isStructural ? 'text-amber-700/80 dark:text-amber-500/80 font-sans font-normal text-2xl md:text-3xl' : '';
 
               return (
-                <React.Fragment key={word.id}>
-                  {word.startBracket === 'square' && '['}
-                  {word.startBracket === 'caret' && '<'}
-                  <span
-                    ref={el => {
-                      if (el) {
-                        wordRefs.current.set(word.id, el);
-                      } else {
-                        wordRefs.current.delete(word.id);
-                      }
-                    }}
-                    data-word-id={word.id}
+                <div 
+                  key={word.id} 
+                  className="inline-flex flex-col items-center relative"
+                >
+                  {/* 
+                      Interlinear Note - Positioned closely above.
+                  */}
+                  <div className="absolute -top-3 left-0 right-0 h-4 flex items-center justify-center pointer-events-none overflow-visible z-20">
+                    {word.interlinearNote && (
+                      <span className="text-[9px] font-sans font-bold uppercase tracking-widest text-amber-900 dark:text-amber-400 leading-none whitespace-nowrap bg-amber-100/95 dark:bg-amber-900/90 px-1.5 py-0.5 rounded border border-amber-300/40 dark:border-amber-700/40 shadow-sm animate-fadeInUp">
+                        {word.interlinearNote}
+                      </span>
+                    )}
+                  </div>
+
+                  <div
                     draggable
                     onDragStart={(e) => handleDragStart(e, word.id)}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, word.id)}
-                    onClick={() => onWordClick(word.id)}
-                    className={`cursor-pointer transition-all duration-150 rounded-sm px-0.5 -mx-0.5 ${highlightClass} ${underlineClass} ${selectionClass} ${pulsatingClass}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onWordClick(word.id);
+                    }}
+                    /* 
+                       Stable height [1.4em] and items-center ensures no vertical movement
+                       when brackets (which have larger fonts) are added or selected.
+                    */
+                    className={`cursor-pointer transition-all duration-200 px-[2px] flex items-center justify-center h-[1.4em] hover:bg-stone-200/30 dark:hover:bg-stone-600/30 rounded ${selectionClass} ${pulsatingClass}`}
                   >
-                    {word.text}
-                  </span>
-                  {word.endBracket === 'square' && ']'}
-                  {word.endBracket === 'caret' && '>'}
-                </React.Fragment>
+                    <span
+                      ref={el => {
+                        if (el) {
+                          wordRefs.current.set(word.id, el);
+                        } else {
+                          wordRefs.current.delete(word.id);
+                        }
+                      }}
+                      className={`relative z-10 ${highlightClass} ${underlineClass} ${structuralClass} rounded-sm whitespace-nowrap px-0.5 leading-none h-full flex items-center`}
+                    >
+                      {word.text}
+                    </span>
+                  </div>
+                </div>
               );
             })}
-          </p>
+          </div>
         ))}
       </div>
-      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
+      
+      {/* Connection Lines Layer */}
+      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-10 overflow-visible">
         {lineCoords.map(coord => {
           const { id, x1, y1, x2, y2 } = coord;
           const isHovered = id === hoveredLineId;
           const cx = (x1 + x2) / 2;
-          const arcHeight = Math.max(15, Math.abs(x1 - x2) * 0.1);
+          
+          // Ultra-flat arc: using 0.01 factor for an almost straight but slightly elegant curve.
+          const arcHeight = Math.max(8, Math.abs(x1 - x2) * 0.01);
           const cy = Math.min(y1, y2) - arcHeight;
           const pathData = `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`;
 
@@ -141,13 +183,12 @@ export const Editor: React.FC<EditorProps> = ({
               key={id}
               d={pathData}
               fill="none"
-              className={`animate-drawLine transition-all duration-200 pointer-events-auto cursor-pointer ${
+              className={`animate-drawLine transition-all duration-300 pointer-events-auto cursor-pointer ${
                 isHovered
-                  ? 'stroke-pink-400 dark:stroke-pink-300'
-                  : 'stroke-pink-500/70 dark:stroke-pink-400/70'
+                  ? 'stroke-amber-600 dark:stroke-amber-400'
+                  : 'stroke-teal-600/50 dark:stroke-teal-400/40'
               }`}
-              strokeWidth={isHovered ? 3 : 2}
-              pathLength="1"
+              strokeWidth={isHovered ? 4 : 2.5}
               onMouseEnter={() => setHoveredLineId(id)}
               onMouseLeave={() => setHoveredLineId(null)}
             />

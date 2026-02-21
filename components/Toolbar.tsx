@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { HIGHLIGHT_COLORS, HighlightColor } from '../constants';
-import { UnderlineIcon, LeftSquareBracketIcon, RightSquareBracketIcon, LeftCaretIcon, RightCaretIcon, BookOpenIcon, DownloadIcon, LoaderIcon, ClearIcon, StartOverIcon } from './Icons';
+import { UnderlineIcon, LeftSquareBracketIcon, RightSquareBracketIcon, LeftCaretIcon, RightCaretIcon, BookOpenIcon, DownloadIcon, LoaderIcon, ClearIcon, StartOverIcon, PencilIcon } from './Icons';
 
 interface ToolbarProps {
   onHighlight: (color: HighlightColor) => void;
@@ -10,49 +11,59 @@ interface ToolbarProps {
   onLookup: () => void;
   onExport: () => void;
   onReset: () => void;
+  onAddNote: () => void;
   isLoading: boolean;
   isWordSelected: boolean;
 }
 
 const COLOR_ORDER: HighlightColor[] = ['red', 'green', 'orange', 'blue', 'purple', 'yellow'];
 
-export const Toolbar: React.FC<ToolbarProps> = ({ onHighlight, onUnderline, onBracket, onClear, onLookup, onExport, onReset, isLoading, isWordSelected }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ onHighlight, onUnderline, onBracket, onClear, onLookup, onExport, onReset, onAddNote, isLoading, isWordSelected }) => {
   return (
-    <div className="flex flex-wrap items-center gap-2 p-2 bg-stone-50/80 dark:bg-stone-800/80 backdrop-blur-sm border border-stone-200 dark:border-stone-700 rounded-lg shadow-sm">
-      <div className="flex items-center gap-1 border-r border-stone-300 dark:border-stone-600 pr-2">
+    <div className="flex flex-wrap items-center gap-3 p-3 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border border-stone-200 dark:border-stone-800 rounded-xl shadow-lg">
+      <div className="flex items-center gap-1.5 border-r border-stone-200 dark:border-stone-800 pr-3">
         {COLOR_ORDER.map((colorName) => (
           <button
             key={colorName}
             onClick={() => onHighlight(colorName)}
             disabled={!isWordSelected}
-            className={`w-7 h-7 rounded-full transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 ${HIGHLIGHT_COLORS[colorName]}`}
+            className={`w-6 h-6 rounded-full transition-all hover:scale-125 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-stone-900 focus:ring-amber-500 disabled:opacity-20 disabled:grayscale disabled:scale-100 shadow-sm ${HIGHLIGHT_COLORS[colorName]}`}
             title={`Highlight ${colorName}`}
           />
         ))}
       </div>
-      <div className="flex items-center gap-1 border-r border-stone-300 dark:border-stone-600 pr-2">
-        <button onClick={onUnderline} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Underline"><UnderlineIcon /></button>
-        <button onClick={() => onBracket('square', 'start')} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Left Square Bracket"><LeftSquareBracketIcon /></button>
-        <button onClick={() => onBracket('square', 'end')} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Right Square Bracket"><RightSquareBracketIcon /></button>
-        <button onClick={() => onBracket('caret', 'start')} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Left Caret Bracket"><LeftCaretIcon /></button>
-        <button onClick={() => onBracket('caret', 'end')} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Right Caret Bracket"><RightCaretIcon /></button>
-        <button onClick={onClear} disabled={!isWordSelected} className="p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Clear Annotations"><ClearIcon /></button>
+      
+      <div className="flex items-center gap-1 border-r border-stone-200 dark:border-stone-800 pr-3">
+        <button onClick={onUnderline} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30" title="Underline"><UnderlineIcon /></button>
+        <button onClick={() => onBracket('square', 'start')} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30 font-bold" title="Add Left Square Bracket">[</button>
+        <button onClick={() => onBracket('square', 'end')} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30 font-bold" title="Add Right Square Bracket">]</button>
+        <button onClick={() => onBracket('caret', 'start')} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30 font-bold" title="Add Left Caret Bracket">&lt;</button>
+        <button onClick={() => onBracket('caret', 'end')} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30 font-bold" title="Add Right Caret Bracket">&gt;</button>
+        <button onClick={onAddNote} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors text-amber-700 dark:text-amber-500 disabled:opacity-30" title="Add Interlinear Note"><PencilIcon /></button>
+        <button onClick={onClear} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 transition-colors disabled:opacity-30" title="Reset Word Annotations"><ClearIcon /></button>
       </div>
-      <div className="flex items-center gap-1">
-        <button onClick={onLookup} disabled={isLoading || !isWordSelected} className="flex items-center gap-2 p-2 px-3 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Look up selected word">
+
+      <div className="flex items-center gap-2">
+        <button 
+          onClick={onLookup} 
+          disabled={isLoading || !isWordSelected} 
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 font-bold text-sm hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all disabled:opacity-30 shadow-sm border border-amber-200/50 dark:border-amber-700/30"
+        >
           {isLoading ? <LoaderIcon /> : <BookOpenIcon />}
           Look Up
         </button>
       </div>
-      <div className="flex-grow" />
-      <div className="flex items-center gap-1">
-        <button onClick={onReset} className="flex items-center gap-2 p-2 px-3 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors" title="Start Over">
+
+      <div className="flex-grow min-w-[20px]" />
+      
+      <div className="flex items-center gap-2">
+        <button onClick={onReset} className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-sm font-semibold">
           <StartOverIcon />
-          Start Over
+          Reset
         </button>
-        <button onClick={onExport} className="flex items-center gap-2 p-2 px-3 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors" title="Export as PDF">
+        <button onClick={onExport} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-800 dark:bg-amber-600 text-white font-bold text-sm hover:opacity-90 transition-all shadow-md">
           <DownloadIcon />
-          Export
+          Export PDF
         </button>
       </div>
     </div>
