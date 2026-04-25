@@ -19,7 +19,7 @@ export const TranslationInput: React.FC<TranslationInputProps> = (props) => {
         <textarea
             ref={textareaRef}
             rows={1}
-            className="w-full h-full p-2 text-base font-serif italic bg-stone-50 dark:bg-stone-800/80 border border-stone-300 dark:border-stone-600 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none overflow-hidden rounded-md"
+            className="w-full h-full p-3 text-xl font-serif italic bg-stone-50 dark:bg-stone-800/80 border border-stone-300 dark:border-stone-600 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none overflow-hidden rounded-md"
             placeholder="..."
             {...props}
         />

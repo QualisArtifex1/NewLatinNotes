@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { QuillIcon, XIcon, CheckIcon, SunIcon, MoonIcon } from './components/Icons';
+import { QuillIcon, XIcon, CheckIcon, SunIcon, MoonIcon, ChevronDownIcon, ChevronUpIcon } from './components/Icons';
 import { TextSelection } from './components/TextSelection';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
@@ -25,6 +25,8 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
     const [selectedWordId, setSelectedWordId] = useState<string | null>(null);
     const [translation, setTranslation] = useState('');
     const [notes, setNotes] = useState('');
+    const [isTranslationCollapsed, setIsTranslationCollapsed] = useState(false);
+    const [isNotesCollapsed, setIsNotesCollapsed] = useState(false);
 
     // Note Modal State
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -237,20 +239,40 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
                             </div>
                             <div className="flex-shrink-0 grid md:grid-cols-2 gap-4 p-4 md:p-6 border-t border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/80 backdrop-blur-md transition-colors duration-500">
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Translation</label>
-                                    <TranslationInput 
-                                        value={translation}
-                                        onChange={(e) => setTranslation(e.target.value)}
-                                        placeholder="A faithful rendering of the Latin text..."
-                                    />
+                                    <div className="flex items-center justify-between ml-1">
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500">Translation</label>
+                                        <button 
+                                            onClick={() => setIsTranslationCollapsed(!isTranslationCollapsed)}
+                                            className="p-1 rounded-md hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-400 transition-colors"
+                                        >
+                                            {isTranslationCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                                        </button>
+                                    </div>
+                                    {!isTranslationCollapsed && (
+                                        <TranslationInput 
+                                            value={translation}
+                                            onChange={(e) => setTranslation(e.target.value)}
+                                            placeholder="A faithful rendering of the Latin text..."
+                                        />
+                                    )}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Scholarly Notes</label>
-                                    <TranslationInput 
-                                        value={notes}
-                                        onChange={(e) => setNotes(e.target.value)}
-                                        placeholder="Grammatical, historical, or literary commentary..."
-                                    />
+                                    <div className="flex items-center justify-between ml-1">
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500">Scholarly Notes</label>
+                                        <button 
+                                            onClick={() => setIsNotesCollapsed(!isNotesCollapsed)}
+                                            className="p-1 rounded-md hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-400 transition-colors"
+                                        >
+                                            {isNotesCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                                        </button>
+                                    </div>
+                                    {!isNotesCollapsed && (
+                                        <TranslationInput 
+                                            value={notes}
+                                            onChange={(e) => setNotes(e.target.value)}
+                                            placeholder="Grammatical, historical, or literary commentary..."
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
