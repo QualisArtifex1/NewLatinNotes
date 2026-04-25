@@ -3,10 +3,8 @@ import { QuillIcon, XIcon, CheckIcon, SunIcon, MoonIcon } from './components/Ico
 import { TextSelection } from './components/TextSelection';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
-import { DictionaryPanel } from './components/DictionaryPanel';
-import type { AnnotatedWord, ConnectionLine, DictionaryEntry } from './types';
+import type { AnnotatedWord, ConnectionLine } from './types';
 import type { HighlightColor } from './constants';
-import { lookupWord } from './services/geminiService';
 import { exportToPdf } from './services/pdfService';
 import { TranslationInput } from './components/TranslationInput';
 
@@ -24,11 +22,9 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
     // Annotation State
     const [linesOfWords, setLinesOfWords] = useState<AnnotatedWord[][]>([]);
     const [lines, setLines] = useState<ConnectionLine[]>([]);
-    const [dictionaryEntries, setDictionaryEntries] = useState<DictionaryEntry[]>([]);
     const [selectedWordId, setSelectedWordId] = useState<string | null>(null);
     const [translation, setTranslation] = useState('');
     const [notes, setNotes] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
     // Note Modal State
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -59,11 +55,9 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
             );
         setLinesOfWords(processedLines);
         setLines([]);
-        setDictionaryEntries([]);
         setSelectedWordId(null);
         setTranslation('');
         setNotes('');
-        setIsLoading(false);
     };
 
     const handleStartAnnotating = (text: string) => {
@@ -168,34 +162,8 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
         setLines(prev => [...prev, newLine]);
     };
 
-    const handleLookup = async () => {
-        if (!selectedWordId) return;
-        
-        const wordToLookUp = linesOfWords.flat().find(w => w.id === selectedWordId);
-        if (!wordToLookUp) return;
-
-        const selectedText = wordToLookUp.text.trim();
-        if (!selectedText) return;
-
-        setIsLoading(true);
-        try {
-            const definition = await lookupWord(selectedText);
-            const newEntry: DictionaryEntry = {
-                id: crypto.randomUUID(),
-                word: selectedText,
-                definition,
-            };
-            setDictionaryEntries(prev => [newEntry, ...prev]);
-        } catch (error) {
-            console.error("Failed to look up word:", error);
-            alert("There was an error looking up the word.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     const handleExport = () => {
-        exportToPdf('editor-container', dictionaryEntries, translation, notes);
+        exportToPdf('editor-container', translation, notes);
     };
 
     return (
@@ -235,65 +203,58 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
                         </div>
                     </div>
                 ) : (
-                    <>
-                        <div className="flex-grow flex flex-col p-4 md:p-6 overflow-hidden animate-fadeIn">
-                            <div className="animate-fadeInUp" style={{ animationDelay: '50ms' }}>
-                                <Toolbar 
-                                    onHighlight={handleApplyHighlight}
-                                    onUnderline={handleApplyUnderline}
-                                    onBracket={handleApplyBracket}
-                                    onClear={handleClearAnnotations}
-                                    onLookup={handleLookup}
-                                    onExport={handleExport}
-                                    onReset={onResetRequest}
-                                    onAddNote={handleOpenNoteModal}
-                                    isLoading={isLoading}
-                                    isWordSelected={!!selectedWordId}
+                    <div className="flex-grow flex flex-col p-4 md:p-6 overflow-hidden animate-fadeIn">
+                        <div className="animate-fadeInUp" style={{ animationDelay: '50ms' }}>
+                            <div className="mb-3 flex items-center gap-2 px-1">
+                                <div className="w-1 h-1 rounded-full bg-amber-500"></div>
+                                <p className="text-[11px] font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                                    To connect words, simply drag one word and drop it onto another.
+                                </p>
+                            </div>
+                            <Toolbar 
+                                onHighlight={handleApplyHighlight}
+                                onUnderline={handleApplyUnderline}
+                                onBracket={handleApplyBracket}
+                                onClear={handleClearAnnotations}
+                                onExport={handleExport}
+                                onReset={onResetRequest}
+                                onAddNote={handleOpenNoteModal}
+                                isWordSelected={!!selectedWordId}
+                            />
+                        </div>
+                        <div 
+                            className="flex-grow flex flex-col mt-4 md:mt-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden animate-fadeInUp relative"
+                            style={{ animationDelay: '150ms' }}
+                        >
+                            <div id="editor-container" className="flex-grow overflow-auto relative bg-white dark:bg-stone-700 transition-colors duration-500">
+                                <Editor
+                                    linesOfWords={linesOfWords}
+                                    lines={lines}
+                                    onConnectWords={handleConnectWords}
+                                    onWordClick={handleWordClick}
+                                    selectedWordId={selectedWordId}
                                 />
                             </div>
-                            <div 
-                                className="flex-grow flex flex-col mt-4 md:mt-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden animate-fadeInUp relative"
-                                style={{ animationDelay: '150ms' }}
-                            >
-                                <div id="editor-container" className="flex-grow overflow-auto relative bg-white dark:bg-stone-700 transition-colors duration-500">
-                                    <Editor
-                                        linesOfWords={linesOfWords}
-                                        lines={lines}
-                                        onConnectWords={handleConnectWords}
-                                        onWordClick={handleWordClick}
-                                        selectedWordId={selectedWordId}
+                            <div className="flex-shrink-0 grid md:grid-cols-2 gap-4 p-4 md:p-6 border-t border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/80 backdrop-blur-md transition-colors duration-500">
+                                <div className="space-y-2">
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Translation</label>
+                                    <TranslationInput 
+                                        value={translation}
+                                        onChange={(e) => setTranslation(e.target.value)}
+                                        placeholder="A faithful rendering of the Latin text..."
                                     />
                                 </div>
-                                <div className="flex-shrink-0 grid md:grid-cols-2 gap-4 p-4 md:p-6 border-t border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/80 backdrop-blur-md transition-colors duration-500">
-                                    <div className="space-y-2">
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Translation</label>
-                                        <TranslationInput 
-                                            value={translation}
-                                            onChange={(e) => setTranslation(e.target.value)}
-                                            placeholder="A faithful rendering of the Latin text..."
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Scholarly Notes</label>
-                                        <TranslationInput 
-                                            value={notes}
-                                            onChange={(e) => setNotes(e.target.value)}
-                                            placeholder="Grammatical, historical, or literary commentary..."
-                                        />
-                                    </div>
+                                <div className="space-y-2">
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500 ml-1">Scholarly Notes</label>
+                                    <TranslationInput 
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
+                                        placeholder="Grammatical, historical, or literary commentary..."
+                                    />
                                 </div>
                             </div>
                         </div>
-                        
-                        <aside 
-                            className="w-full md:w-80 lg:w-96 flex flex-col p-6 border-l border-stone-200 dark:border-stone-800 bg-white/40 dark:bg-stone-950/40 backdrop-blur-xl animate-fadeIn transition-colors duration-500"
-                            style={{ animationDelay: '250ms' }}
-                        >
-                            <div id="dictionary-panel-container" className="flex flex-col h-full">
-                                <DictionaryPanel entries={dictionaryEntries} />
-                            </div>
-                        </aside>
-                    </>
+                    </div>
                 )}
 
                 {/* Note Modal Overlay */}

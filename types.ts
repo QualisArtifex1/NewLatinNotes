@@ -13,9 +13,3 @@ export interface ConnectionLine {
   fromWordId: string;
   toWordId: string;
 }
-
-export interface DictionaryEntry {
-  id: string;
-  word: string;
-  definition: string;
-}

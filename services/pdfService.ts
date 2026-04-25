@@ -1,4 +1,3 @@
-import type { DictionaryEntry } from '../types';
 
 // These will be available globally from the CDN scripts in index.html
 declare const jspdf: any;
@@ -6,7 +5,6 @@ declare const html2canvas: any;
 
 export const exportToPdf = async (
   editorElementId: string,
-  dictionaryEntries: DictionaryEntry[],
   translation: string,
   notes: string,
 ) => {
@@ -136,44 +134,6 @@ export const exportToPdf = async (
       checkAndAddPage(textHeight);
       pdf.text(notesLines, margin, y);
       y += textHeight + 20;
-    }
-
-    // 4. Process Dictionary Content
-    if (dictionaryEntries.length > 0) {
-      checkAndAddPage(60);
-
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(16);
-      pdf.text('Dictionary', margin, y);
-      y += 30;
-
-      const sortedEntries = [...dictionaryEntries].sort((a, b) => a.word.localeCompare(b.word));
-      const lineHeightRatio = 1.15; // jsPDF default
-      const entryBottomMargin = 15;
-
-      for (const entry of sortedEntries) {
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(10);
-        const wordLines = pdf.splitTextToSize(entry.word, contentWidth);
-
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(10);
-        const defLines = pdf.splitTextToSize(entry.definition, contentWidth);
-        
-        const wordHeight = wordLines.length * 10 * lineHeightRatio;
-        const defHeight = defLines.length * 10 * lineHeightRatio;
-        const entryHeight = wordHeight + defHeight + entryBottomMargin;
-
-        checkAndAddPage(entryHeight);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text(wordLines, margin, y);
-        y += wordHeight + 2; // small gap
-
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(defLines, margin, y);
-        y += defHeight + entryBottomMargin;
-      }
     }
 
     pdf.save('latin-annotations.pdf');

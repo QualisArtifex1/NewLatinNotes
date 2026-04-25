@@ -1,24 +1,22 @@
 
 import React from 'react';
 import { HIGHLIGHT_COLORS, HighlightColor } from '../constants';
-import { UnderlineIcon, LeftSquareBracketIcon, RightSquareBracketIcon, LeftCaretIcon, RightCaretIcon, BookOpenIcon, DownloadIcon, LoaderIcon, ClearIcon, StartOverIcon, PencilIcon } from './Icons';
+import { UnderlineIcon, LeftSquareBracketIcon, RightSquareBracketIcon, LeftCaretIcon, RightCaretIcon, DownloadIcon, ClearIcon, StartOverIcon, PencilIcon } from './Icons';
 
 interface ToolbarProps {
   onHighlight: (color: HighlightColor) => void;
   onUnderline: () => void;
   onBracket: (type: 'square' | 'caret', side: 'start' | 'end') => void;
   onClear: () => void;
-  onLookup: () => void;
   onExport: () => void;
   onReset: () => void;
   onAddNote: () => void;
-  isLoading: boolean;
   isWordSelected: boolean;
 }
 
 const COLOR_ORDER: HighlightColor[] = ['red', 'green', 'orange', 'blue', 'purple', 'yellow'];
 
-export const Toolbar: React.FC<ToolbarProps> = ({ onHighlight, onUnderline, onBracket, onClear, onLookup, onExport, onReset, onAddNote, isLoading, isWordSelected }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ onHighlight, onUnderline, onBracket, onClear, onExport, onReset, onAddNote, isWordSelected }) => {
   return (
     <div className="flex flex-wrap items-center gap-3 p-3 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border border-stone-200 dark:border-stone-800 rounded-xl shadow-lg">
       <div className="flex items-center gap-1.5 border-r border-stone-200 dark:border-stone-800 pr-3">
@@ -41,17 +39,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onHighlight, onUnderline, onBr
         <button onClick={() => onBracket('caret', 'end')} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-30 font-bold" title="Add Right Caret Bracket">&gt;</button>
         <button onClick={onAddNote} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors text-amber-700 dark:text-amber-500 disabled:opacity-30" title="Add Interlinear Note"><PencilIcon /></button>
         <button onClick={onClear} disabled={!isWordSelected} className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 transition-colors disabled:opacity-30" title="Reset Word Annotations"><ClearIcon /></button>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <button 
-          onClick={onLookup} 
-          disabled={isLoading || !isWordSelected} 
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 font-bold text-sm hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all disabled:opacity-30 shadow-sm border border-amber-200/50 dark:border-amber-700/30"
-        >
-          {isLoading ? <LoaderIcon /> : <BookOpenIcon />}
-          Look Up
-        </button>
       </div>
 
       <div className="flex-grow min-w-[20px]" />
