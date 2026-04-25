@@ -3,9 +3,11 @@ import { PRELOADED_TEXTS } from '../data/texts';
 
 interface TextSelectionProps {
   onStartAnnotating: (text: string) => void;
+  onLoad: () => void;
+  hasSavedSession: boolean;
 }
 
-export const TextSelection: React.FC<TextSelectionProps> = ({ onStartAnnotating }) => {
+export const TextSelection: React.FC<TextSelectionProps> = ({ onStartAnnotating, onLoad, hasSavedSession }) => {
   const [text, setText] = useState('');
   const [selectedPreset, setSelectedPreset] = useState('');
 
@@ -67,7 +69,7 @@ export const TextSelection: React.FC<TextSelectionProps> = ({ onStartAnnotating 
           }}
         />
 
-        <div className="mt-4 text-center">
+        <div className="mt-4 flex items-center justify-center gap-4">
           <button
             type="submit"
             disabled={!text.trim()}
@@ -75,6 +77,16 @@ export const TextSelection: React.FC<TextSelectionProps> = ({ onStartAnnotating 
           >
             Start Annotating
           </button>
+          
+          {hasSavedSession && (
+            <button
+              type="button"
+              onClick={onLoad}
+              className="px-6 py-2 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 font-semibold rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
+            >
+              Load Previous Session
+            </button>
+          )}
         </div>
       </form>
     </div>

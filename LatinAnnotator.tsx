@@ -3,7 +3,7 @@ import { QuillIcon, XIcon, CheckIcon, SunIcon, MoonIcon, ChevronDownIcon, Chevro
 import { TextSelection } from './components/TextSelection';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
-import type { AnnotatedWord, ConnectionLine } from './types';
+import type { AnnotatedWord, ConnectionLine, SavedSession } from './types';
 import type { HighlightColor } from './constants';
 import { exportToPdf } from './services/pdfService';
 import { TranslationInput } from './components/TranslationInput';
@@ -27,6 +27,7 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
     const [notes, setNotes] = useState('');
     const [isTranslationCollapsed, setIsTranslationCollapsed] = useState(false);
     const [isNotesCollapsed, setIsNotesCollapsed] = useState(false);
+    const [hasSavedSession, setHasSavedSession] = useState(() => !!localStorage.getItem('qualis-artifex-save'));
 
     // Note Modal State
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -168,6 +169,45 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
         exportToPdf('editor-container', translation, notes);
     };
 
+    const handleSave = () => {
+        const existingSave = localStorage.getItem('qualis-artifex-save');
+        if (existingSave) {
+            const confirmOverwrite = window.confirm('A saved session already exists. Do you want to overwrite it?');
+            if (!confirmOverwrite) return;
+        }
+
+        const session: SavedSession = {
+            linesOfWords,
+            lines,
+            translation,
+            notes,
+            timestamp: Date.now(),
+        };
+
+        localStorage.setItem('qualis-artifex-save', JSON.stringify(session));
+        setHasSavedSession(true);
+        alert('Session saved successfully!');
+    };
+
+    const handleLoad = () => {
+        const savedData = localStorage.getItem('qualis-artifex-save');
+        if (!savedData) return;
+
+        try {
+            const session: SavedSession = JSON.parse(savedData);
+            setLinesOfWords(session.linesOfWords);
+            setLines(session.lines);
+            setTranslation(session.translation);
+            setNotes(session.notes);
+            setSelectedWordId(null);
+            setView('annotating');
+            alert('Session loaded successfully!');
+        } catch (error) {
+            console.error('Failed to load session:', error);
+            alert('Error loading saved session.');
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen text-stone-900 dark:text-stone-100 bg-stone-100 dark:bg-stone-950 transition-colors duration-500">
             <header className="flex items-center justify-between px-6 py-4 border-b border-stone-200 dark:border-stone-800 shadow-sm bg-white dark:bg-stone-900/80 backdrop-blur-md z-30 transition-colors duration-500">
@@ -201,7 +241,11 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
                 {view === 'selection' ? (
                     <div className="flex-grow flex flex-col p-8 overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-stone-50 via-stone-100 to-stone-200 dark:from-stone-900 dark:via-stone-950 dark:to-black">
                         <div className="max-w-4xl w-full mx-auto flex-grow rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-2xl overflow-hidden animate-fadeInUp">
-                            <TextSelection onStartAnnotating={handleStartAnnotating} />
+                            <TextSelection 
+                                onStartAnnotating={handleStartAnnotating} 
+                                onLoad={handleLoad}
+                                hasSavedSession={hasSavedSession}
+                            />
                         </div>
                     </div>
                 ) : (
@@ -221,7 +265,10 @@ const LatinAnnotator: React.FC<LatinAnnotatorProps> = ({ onResetRequest }) => {
                                 onExport={handleExport}
                                 onReset={onResetRequest}
                                 onAddNote={handleOpenNoteModal}
+                                onSave={handleSave}
+                                onLoad={handleLoad}
                                 isWordSelected={!!selectedWordId}
+                                hasSavedSession={hasSavedSession}
                             />
                         </div>
                         <div 

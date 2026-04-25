@@ -13,3 +13,11 @@ export interface ConnectionLine {
   fromWordId: string;
   toWordId: string;
 }
+
+export interface SavedSession {
+  linesOfWords: AnnotatedWord[][];
+  lines: ConnectionLine[];
+  translation: string;
+  notes: string;
+  timestamp: number;
+}
